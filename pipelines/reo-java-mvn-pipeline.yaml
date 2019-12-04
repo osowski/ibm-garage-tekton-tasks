@@ -1,0 +1,55 @@
+apiVersion: tekton.dev/v1alpha1
+kind: Pipeline
+metadata:
+  name: reo-java-mvn-pipeline
+spec:
+  params:
+    - name: CONTEXT
+      type: string
+      description: Path to context
+      default: .
+    - name: DOCKERFILE
+      type: string
+      description: Path to context
+      default: ./Dockerfile
+  resources:
+    - name: git-source
+      type: git
+    - name: docker-image
+      type: image
+  tasks:
+    - name: build
+      taskRef:
+        name: igc-build-push
+      params:
+        - name: CONTEXT
+          value: $(params.CONTEXT)
+        - name: DOCKERFILE
+          value: $(params.DOCKERFILE)
+      resources:
+        inputs:
+          - name: source
+            resource: git-source
+        outputs:
+          - name: image
+            resource: docker-image
+#    - name: package
+#      taskRef:
+#        name: igc-helm-package
+#      runAfter: [health]
+#      resources:
+#        inputs:
+#          - name: source
+#            resource: git-source
+#          - name: image
+#            resource: docker-image
+#    - name: gitops
+#      taskRef:
+#        name: igc-gitops
+#      runAfter: [package]
+#      resources:
+#        inputs:
+#          - name: source
+#            resource: git-source
+#          - name: image
+#            resource: docker-image

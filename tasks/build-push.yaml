@@ -10,6 +10,8 @@ spec:
     params:
       - name: BUILDER_IMAGE
         default: quay.io/buildah/stable:v1.9.0
+      - name: CONTEXT
+        default: .
       - name: DOCKERFILE
         default: ./Dockerfile
       - name: TLSVERIFY
@@ -31,7 +33,7 @@ spec:
         - "$(inputs.params.DOCKERFILE)"
         - "-t"
         - "$(outputs.resources.image.url)"
-        - "."
+        - "/workspace/source/$(inputs.params.CONTEXT)"
       volumeMounts:
         - mountPath: /var/lib/containers
           name: varlibcontainers

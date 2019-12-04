@@ -1,0 +1,20 @@
+apiVersion: tekton.dev/v1alpha1
+kind: PipelineRun
+metadata:
+  generateName: reo-java-mvn-pipelinerun-
+spec:
+  serviceAccountName: pipeline
+  pipelineRef:
+    name: reo-java-mvn-pipeline
+  params:
+    - name: CONTEXT
+      value: "/order-query-ms"
+    - name: DOCKERFILE
+      value: "./Dockerfile.multistage"
+  resources:
+    - name: git-source
+      resourceRef:
+        name: git-order-query-ms
+    - name: docker-image
+      resourceRef:
+        name: image-order-query-ms
